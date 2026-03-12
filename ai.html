@@ -1,0 +1,1133 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>AI Interview Coach</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <!-- Simple Google Font (optional) -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
+
+  <style>
+    :root {
+      --bg: #050816;
+      --bg-card: #111827;
+      --bg-card-soft: #1f2933;
+      --accent: #6366f1;
+      --accent-soft: #4f46e5;
+      --accent-light: #c7d2fe;
+      --text: #f9fafb;
+      --text-muted: #9ca3af;
+      --danger: #f97373;
+      --success: #4ade80;
+      --radius-lg: 18px;
+      --radius-sm: 10px;
+      --shadow-soft: 0 14px 35px rgba(15, 23, 42, 0.55);
+      --shadow-light: 0 10px 25px rgba(15, 23, 42, 0.4);
+      --border-subtle: 1px solid rgba(148, 163, 184, 0.22);
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: "Poppins", system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
+      background: radial-gradient(circle at top, #1f2937 0, #020617 40%, #000 100%);
+      color: var(--text);
+      min-height: 100vh;
+      display: flex;
+      align-items: stretch;
+      justify-content: center;
+      padding: 16px;
+    }
+
+    .app-shell {
+      width: 100%;
+      max-width: 1120px;
+      background: linear-gradient(135deg, rgba(15, 23, 42, 0.92), rgba(15, 23, 42, 0.98));
+      border-radius: 26px;
+      box-shadow: var(--shadow-soft);
+      border: 1px solid rgba(148, 163, 184, 0.35);
+      display: flex;
+      flex-direction: column;
+      padding: 18px 18px 20px;
+      gap: 16px;
+    }
+
+    @media (min-width: 900px) {
+      .app-shell {
+        padding: 22px 24px 24px;
+      }
+    }
+
+    header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .logo-badge {
+      width: 38px;
+      height: 38px;
+      border-radius: 14px;
+      background: radial-gradient(circle at top left, #4f46e5, #06b6d4);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 10px 25px rgba(79, 70, 229, 0.6);
+    }
+
+    .logo-badge span {
+      font-weight: 700;
+      font-size: 18px;
+      color: white;
+    }
+
+    .title-group h1 {
+      font-size: 1.35rem;
+      font-weight: 600;
+      letter-spacing: 0.02em;
+    }
+
+    .title-group p {
+      font-size: 0.82rem;
+      color: var(--text-muted);
+      margin-top: 2px;
+    }
+
+    .pill {
+      font-size: 0.72rem;
+      padding: 6px 12px;
+      border-radius: 999px;
+      border: 1px solid rgba(148, 163, 184, 0.5);
+      color: var(--accent-light);
+      background: radial-gradient(circle at top left, rgba(79, 70, 229, 0.2), rgba(15, 23, 42, 0.9));
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      white-space: nowrap;
+    }
+
+    .pill-dot {
+      width: 7px;
+      height: 7px;
+      border-radius: 999px;
+      background: #4ade80;
+      box-shadow: 0 0 12px rgba(74, 222, 128, 0.9);
+    }
+
+    /* MAIN LAYOUT */
+    .main-layout {
+      display: grid;
+      grid-template-columns: minmax(0, 2fr) minmax(0, 1.6fr);
+      gap: 16px;
+    }
+
+    @media (max-width: 880px) {
+      .main-layout {
+        grid-template-columns: minmax(0, 1fr);
+      }
+    }
+
+    /* LEFT COLUMN */
+    .left-column {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .card {
+      background: radial-gradient(circle at top left, rgba(15, 23, 42, 1), rgba(15, 23, 42, 0.96));
+      border-radius: var(--radius-lg);
+      border: var(--border-subtle);
+      padding: 14px 14px 16px;
+      box-shadow: var(--shadow-light);
+      backdrop-filter: blur(16px);
+    }
+
+    .card-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 6px;
+      margin-bottom: 10px;
+    }
+
+    .card-title {
+      font-size: 0.9rem;
+      font-weight: 500;
+      letter-spacing: 0.02em;
+    }
+
+    .card-subtitle {
+      font-size: 0.75rem;
+      color: var(--text-muted);
+      margin-top: 3px;
+    }
+
+    .badge-soft {
+      font-size: 0.7rem;
+      padding: 4px 8px;
+      border-radius: 999px;
+      border: 1px solid rgba(148, 163, 184, 0.4);
+      background: rgba(15, 23, 42, 0.9);
+      color: var(--accent-light);
+    }
+
+    /* FORM CONTROLS */
+    .filters {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 8px;
+      margin-top: 4px;
+    }
+
+    @media (max-width: 520px) {
+      .filters {
+        grid-template-columns: minmax(0, 1fr);
+      }
+    }
+
+    label {
+      font-size: 0.76rem;
+      color: var(--text-muted);
+      display: block;
+      margin-bottom: 3px;
+    }
+
+    select {
+      width: 100%;
+      padding: 7px 10px;
+      border-radius: var(--radius-sm);
+      border: 1px solid rgba(148, 163, 184, 0.7);
+      outline: none;
+      background: #020617;
+      color: var(--text);
+      font-size: 0.8rem;
+      transition: border-color 0.15s ease, box-shadow 0.15s ease, background 0.15s ease;
+    }
+
+    select:focus {
+      border-color: var(--accent);
+      box-shadow: 0 0 0 1px rgba(99, 102, 241, 0.4);
+      background: #020617;
+    }
+
+    /* QUESTION AREA */
+    .question-text {
+      margin-top: 8px;
+      padding: 10px;
+      border-radius: 12px;
+      background: linear-gradient(135deg, rgba(15, 23, 42, 0.95), rgba(28, 32, 52, 1));
+      border: 1px solid rgba(148, 163, 184, 0.5);
+      font-size: 0.9rem;
+      line-height: 1.4;
+    }
+
+    .question-meta {
+      font-size: 0.72rem;
+      color: var(--accent-light);
+      margin-bottom: 4px;
+      display: flex;
+      justify-content: space-between;
+      gap: 4px;
+    }
+
+    .question-controls {
+      display: flex;
+      justify-content: space-between;
+      margin-top: 10px;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+
+    .btn {
+      border: none;
+      outline: none;
+      cursor: pointer;
+      border-radius: 999px;
+      padding: 7px 12px;
+      font-size: 0.78rem;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      font-weight: 500;
+      transition: transform 0.1s ease, box-shadow 0.1s ease, background 0.15s ease, border-color 0.15s;
+      white-space: nowrap;
+    }
+
+    .btn-primary {
+      background: linear-gradient(135deg, var(--accent), var(--accent-soft));
+      color: white;
+      box-shadow: 0 10px 24px rgba(79, 70, 229, 0.65);
+      border: 1px solid rgba(129, 140, 248, 0.7);
+    }
+
+    .btn-primary:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 12px 30px rgba(79, 70, 229, 0.9);
+    }
+
+    .btn-outline {
+      background: transparent;
+      border: 1px solid rgba(148, 163, 184, 0.7);
+      color: var(--text-muted);
+    }
+
+    .btn-outline:hover {
+      background: rgba(15, 23, 42, 0.9);
+      transform: translateY(-1px);
+    }
+
+    .btn-ghost {
+      background: transparent;
+      border-radius: 999px;
+      border: 1px dashed rgba(148, 163, 184, 0.4);
+      color: var(--text-muted);
+      font-size: 0.72rem;
+      padding: 5px 8px;
+    }
+
+    .btn-sm {
+      padding: 5px 9px;
+      font-size: 0.7rem;
+    }
+
+    .btn:active {
+      transform: translateY(0);
+      box-shadow: none;
+    }
+
+    /* TEXTAREA */
+    textarea {
+      width: 100%;
+      margin-top: 10px;
+      min-height: 120px;
+      resize: vertical;
+      padding: 9px 10px;
+      border-radius: 14px;
+      border: 1px solid rgba(148, 163, 184, 0.7);
+      background: radial-gradient(circle at top, rgba(15, 23, 42, 0.98), rgba(15, 23, 42, 0.94));
+      color: var(--text);
+      font-size: 0.84rem;
+      line-height: 1.4;
+      outline: none;
+      transition: border-color 0.15s ease, box-shadow 0.15s ease, background 0.2s ease;
+    }
+
+    textarea:focus {
+      border-color: var(--accent);
+      box-shadow: 0 0 0 1px rgba(99, 102, 241, 0.6);
+      background: #020617;
+    }
+
+    .helper-text {
+      margin-top: 4px;
+      font-size: 0.72rem;
+      color: var(--text-muted);
+    }
+
+    /* RIGHT COLUMN */
+    .right-column {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .tag-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+      margin-top: 4px;
+    }
+
+    .tag {
+      font-size: 0.7rem;
+      padding: 4px 8px;
+      border-radius: 999px;
+      background: rgba(15, 23, 42, 0.95);
+      border: 1px solid rgba(148, 163, 184, 0.4);
+      color: var(--accent-light);
+    }
+
+    .metrics {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+      margin-top: 6px;
+    }
+
+    .metric-box {
+      flex: 1;
+      min-width: 120px;
+      font-size: 0.72rem;
+      padding: 7px 9px;
+      border-radius: 12px;
+      background: radial-gradient(circle at top left, rgba(30, 64, 175, 0.6), rgba(15, 23, 42, 1));
+      border: 1px solid rgba(129, 140, 248, 0.7);
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+    }
+
+    .metric-label {
+      color: var(--accent-light);
+    }
+
+    .metric-value {
+      font-weight: 600;
+      font-size: 0.9rem;
+    }
+
+    .metric-sub {
+      font-size: 0.68rem;
+      color: var(--text-muted);
+    }
+
+    .progress-track {
+      height: 6px;
+      border-radius: 999px;
+      background: rgba(31, 41, 55, 1);
+      overflow: hidden;
+      margin-top: 6px;
+    }
+
+    .progress-bar {
+      height: 100%;
+      width: 0%;
+      border-radius: inherit;
+      background: linear-gradient(90deg, #4ade80, #a3e635);
+      transition: width 0.25s ease-out;
+    }
+
+    .feedback-section {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      margin-top: 4px;
+    }
+
+    .feedback-block {
+      padding: 8px 9px;
+      border-radius: 12px;
+      background: rgba(15, 23, 42, 0.96);
+      border: 1px solid rgba(148, 163, 184, 0.5);
+      font-size: 0.75rem;
+      line-height: 1.4;
+    }
+
+    .feedback-title {
+      font-size: 0.76rem;
+      font-weight: 500;
+      margin-bottom: 4px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .feedback-title span.icon {
+      font-size: 0.9rem;
+    }
+
+    .feedback-text {
+      color: var(--text-muted);
+    }
+
+    .feedback-empty {
+      text-align: center;
+      padding: 14px 6px;
+      font-size: 0.78rem;
+      color: var(--text-muted);
+    }
+
+    .status-chip {
+      font-size: 0.7rem;
+      padding: 4px 8px;
+      border-radius: 999px;
+      background: rgba(15, 23, 42, 1);
+      border: 1px solid rgba(148, 163, 184, 0.7);
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      color: var(--text-muted);
+    }
+
+    .status-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 999px;
+      background: #facc15;
+      box-shadow: 0 0 8px rgba(250, 204, 21, 0.9);
+    }
+
+    footer {
+      margin-top: 4px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 8px;
+      font-size: 0.7rem;
+      color: var(--text-muted);
+      flex-wrap: wrap;
+    }
+
+    .history-note {
+      font-size: 0.7rem;
+      color: var(--text-muted);
+    }
+
+    .history-items {
+      margin-top: 4px;
+      font-size: 0.7rem;
+      max-height: 70px;
+      overflow: auto;
+      padding-right: 4px;
+      color: var(--text-muted);
+    }
+
+    .history-item {
+      padding: 3px 0;
+      border-bottom: 1px dashed rgba(55, 65, 81, 0.7);
+    }
+
+    .history-item:last-child {
+      border-bottom: none;
+    }
+  </style>
+</head>
+<body>
+  <div class="app-shell">
+    <header>
+      <div class="brand">
+        <div class="logo-badge">
+          <span>AI</span>
+        </div>
+        <div class="title-group">
+          <h1>AI Interview Coach</h1>
+          <p>Practice answers and get instant feedback before real HR rounds.</p>
+        </div>
+      </div>
+      
+    </header>
+
+    <div class="main-layout">
+      <!-- LEFT -->
+      <section class="left-column">
+        <div class="card">
+          <div class="card-header">
+            <div>
+              <div class="card-title">Choose your interview mode</div>
+              <div class="card-subtitle">Select role & difficulty to get tailored questions.</div>
+            </div>
+            <span class="badge-soft">Step 1 · Setup</span>
+          </div>
+
+          <div class="filters">
+            <div>
+              <label for="roleSelect">Role</label>
+              <select id="roleSelect">
+                <option value="data-analyst">Data Analyst</option>
+                <option value="web-developer">Web Developer</option>
+                <option value="generic-hr">Generic HR / Non-IT</option>
+              </select>
+            </div>
+            <div>
+              <label for="difficultySelect">Difficulty</label>
+              <select id="difficultySelect">
+                <option value="easy">Easy</option>
+                <option value="medium" selected>Medium</option>
+                <option value="hard">Hard</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="question-text" id="questionBox">
+            <div class="question-meta">
+              <span id="questionMeta">Data Analyst · Medium</span>
+              <span id="questionIndex">Question 1 / 1</span>
+            </div>
+            <div id="questionText">
+              Loading question…
+            </div>
+          </div>
+
+          <div class="question-controls">
+            <div style="display:flex; gap:6px;">
+              <button class="btn btn-outline btn-sm" id="prevBtn">← Previous</button>
+              <button class="btn btn-outline btn-sm" id="nextBtn">Next →</button>
+            </div>
+            <button class="btn btn-ghost btn-sm" id="shuffleBtn">🔀 Random question</button>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-header">
+            <div>
+              <div class="card-title">Type your answer</div>
+              <div class="card-subtitle">Write how you would actually respond in an interview.</div>
+            </div>
+            <span class="badge-soft">Step 2 · Answer</span>
+          </div>
+
+          <textarea id="answerInput" placeholder="Example: Start by giving brief context, then explain your approach, tools you used, and end with impact/result."></textarea>
+          <div class="helper-text">
+            Tip: Use simple English. Imagine talking to an HR who doesn’t know deep technical terms.
+          </div>
+
+          <div class="question-controls" style="margin-top:10px;">
+            <button class="btn btn-primary" id="feedbackBtn">
+              ⚡ Get AI Feedback
+            </button>
+            <button class="btn btn-outline btn-sm" id="clearBtn">Clear answer</button>
+          </div>
+        </div>
+      </section>
+
+      <!-- RIGHT -->
+      <section class="right-column">
+        <div class="card">
+          <div class="card-header">
+            <div>
+              <div class="card-title">Progress & tags</div>
+              <div class="card-subtitle">Track how much you’ve practiced.</div>
+            </div>
+            <span class="badge-soft" id="sessionStatus">Session: Fresh</span>
+          </div>
+
+          <div class="tag-row" id="tagRow">
+            <!-- tags injected via JS -->
+          </div>
+
+          <div class="metrics">
+            <div class="metric-box">
+              <div class="metric-label">Questions answered today</div>
+              <div class="metric-value" id="answeredCount">0</div>
+              <div class="metric-sub">Goal: 10</div>
+              <div class="progress-track">
+                <div class="progress-bar" id="progressBar"></div>
+              </div>
+            </div>
+            <div class="metric-box" style="background: radial-gradient(circle at top left, rgba(45, 212, 191, 0.6), rgba(15, 23, 42, 1)); border-color: rgba(45, 212, 191, 0.9);">
+              <div class="metric-label">Average confidence (self)</div>
+              <div class="metric-value" id="selfScore">–</div>
+              <div class="metric-sub">Update this by practising honestly.</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-header">
+            <div>
+              <div class="card-title">AI-style feedback (mock)</div>
+              <div class="card-subtitle">This simulates how AI feedback will look.</div>
+            </div>
+            <span class="status-chip" id="feedbackStatus">
+              <span class="status-dot"></span>
+              Waiting for your answer…
+            </span>
+          </div>
+
+          <div class="feedback-section" id="feedbackSection">
+            <div class="feedback-empty" id="feedbackEmpty">
+              No feedback yet. Answer the question and click <strong>“Get AI Feedback”</strong>.
+            </div>
+
+            <div class="feedback-block" id="strengthsBlock" style="display:none;">
+              <div class="feedback-title">
+                <span class="icon">✅</span>
+                Strengths in your answer
+              </div>
+              <div class="feedback-text" id="strengthsText"></div>
+            </div>
+
+            <div class="feedback-block" id="improvementsBlock" style="display:none;">
+              <div class="feedback-title">
+                <span class="icon">🛠</span>
+                Areas to improve
+              </div>
+              <div class="feedback-text" id="improvementsText"></div>
+            </div>
+
+            <div class="feedback-block" id="suggestedBlock" style="display:none;">
+              <div class="feedback-title">
+                <span class="icon">💡</span>
+                Suggested sample answer (short)
+              </div>
+              <div class="feedback-text" id="suggestedText"></div>
+            </div>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-header" style="margin-bottom:4px;">
+            <div>
+              <div class="card-title">Session history (this browser only)</div>
+              <div class="card-subtitle">Stored using localStorage, no backend.</div>
+            </div>
+          </div>
+          <div class="history-note">
+            Last few questions you answered:
+          </div>
+          <div class="history-items" id="historyList">
+            <div class="history-item">
+              No history yet. Start by answering your first question. ✨
+            </div>
+          </div>
+        </div>
+      </section>
+    </div>
+
+    <footer>
+      <span>Built by MOUNIKA SHENAGARAPU</span>
+      
+    </footer>
+  </div>
+
+  <script>
+    // --------------------------
+    // MOCK DATA: QUESTIONS
+    // --------------------------
+
+    const QUESTIONS = [
+      {
+        id: 1,
+        role: "data-analyst",
+        difficulty: "easy",
+        text: "Tell me about a time you used data to make a simple decision or recommendation.",
+        tags: ["Communication", "Storytelling", "Basic analytics"]
+      },
+      {
+        id: 2,
+        role: "data-analyst",
+        difficulty: "medium",
+        text: "How would you handle missing values in a dataset before analysis?",
+        tags: ["Data cleaning", "Problem solving", "SQL / Excel / Python"]
+      },
+      {
+        id: 3,
+        role: "data-analyst",
+        difficulty: "hard",
+        text: "How would you design a dashboard to track sales performance for different regions and products?",
+        tags: ["Dashboarding", "Business understanding", "Visualization"]
+      },
+      {
+        id: 4,
+        role: "web-developer",
+        difficulty: "easy",
+        text: "Explain the difference between HTML, CSS, and JavaScript in simple terms.",
+        tags: ["Basics", "Fundamentals", "Front-end"]
+      },
+      {
+        id: 5,
+        role: "web-developer",
+        difficulty: "medium",
+        text: "How would you make a web page responsive for both mobile and desktop?",
+        tags: ["Responsive design", "CSS", "Flexbox / Grid"]
+      },
+      {
+        id: 6,
+        role: "web-developer",
+        difficulty: "hard",
+        text: "A page is loading slowly. How would you investigate and improve its performance?",
+        tags: ["Performance", "Optimization", "Problem solving"]
+      },
+      {
+        id: 7,
+        role: "generic-hr",
+        difficulty: "easy",
+        text: "Tell me about yourself.",
+        tags: ["Self-intro", "Communication", "Confidence"]
+      },
+      {
+        id: 8,
+        role: "generic-hr",
+        difficulty: "medium",
+        text: "Describe a situation where you faced a challenge and how you handled it.",
+        tags: ["Behavioral", "Problem solving", "Ownership"]
+      },
+      {
+        id: 9,
+        role: "generic-hr",
+        difficulty: "hard",
+        text: "Where do you see yourself in the next 3–5 years?",
+        tags: ["Career goals", "Planning", "Mindset"]
+      }
+    ];
+
+    // --------------------------
+    // STATE
+    // --------------------------
+
+    let filteredQuestions = [];
+    let currentIndex = 0;
+    let questionsAnswered = 0;
+
+    // --------------------------
+    // ELEMENT REFERENCES
+    // --------------------------
+
+    const roleSelect = document.getElementById("roleSelect");
+    const difficultySelect = document.getElementById("difficultySelect");
+
+    const questionMetaEl = document.getElementById("questionMeta");
+    const questionIndexEl = document.getElementById("questionIndex");
+    const questionTextEl = document.getElementById("questionText");
+
+    const prevBtn = document.getElementById("prevBtn");
+    const nextBtn = document.getElementById("nextBtn");
+    const shuffleBtn = document.getElementById("shuffleBtn");
+
+    const answerInput = document.getElementById("answerInput");
+    const feedbackBtn = document.getElementById("feedbackBtn");
+    const clearBtn = document.getElementById("clearBtn");
+
+    const tagRow = document.getElementById("tagRow");
+    const answeredCountEl = document.getElementById("answeredCount");
+    const progressBarEl = document.getElementById("progressBar");
+    const selfScoreEl = document.getElementById("selfScore");
+    const sessionStatusEl = document.getElementById("sessionStatus");
+
+    const feedbackStatusEl = document.getElementById("feedbackStatus");
+    const feedbackEmptyEl = document.getElementById("feedbackEmpty");
+    const strengthsBlockEl = document.getElementById("strengthsBlock");
+    const improvementsBlockEl = document.getElementById("improvementsBlock");
+    const suggestedBlockEl = document.getElementById("suggestedBlock");
+    const strengthsTextEl = document.getElementById("strengthsText");
+    const improvementsTextEl = document.getElementById("improvementsText");
+    const suggestedTextEl = document.getElementById("suggestedText");
+
+    const historyListEl = document.getElementById("historyList");
+
+    // --------------------------
+    // INITIALIZE
+    // --------------------------
+
+    function init() {
+      loadHistoryFromStorage();
+      filterQuestions();
+      renderQuestion();
+      updateTags();
+      updateProgressUI();
+    }
+
+    function filterQuestions() {
+      const role = roleSelect.value;
+      const difficulty = difficultySelect.value;
+
+      filteredQuestions = QUESTIONS.filter(q => q.role === role && q.difficulty === difficulty);
+
+      if (filteredQuestions.length === 0) {
+        // Fallback: if no exact match, show any with same role
+        filteredQuestions = QUESTIONS.filter(q => q.role === role);
+      }
+
+      currentIndex = 0;
+    }
+
+    function renderQuestion() {
+      const role = roleSelect.value;
+      const difficulty = difficultySelect.value;
+
+      if (filteredQuestions.length === 0) {
+        questionTextEl.textContent = "No questions found for this selection.";
+        questionMetaEl.textContent = "—";
+        questionIndexEl.textContent = "Question 0 / 0";
+        tagRow.innerHTML = "";
+        return;
+      }
+
+      const q = filteredQuestions[currentIndex];
+
+      questionTextEl.textContent = q.text;
+      questionMetaEl.textContent = metaLabel(role, difficulty);
+      questionIndexEl.textContent = `Question ${currentIndex + 1} / ${filteredQuestions.length}`;
+
+      // Update tags
+      tagRow.innerHTML = "";
+      q.tags.forEach(tag => {
+        const span = document.createElement("span");
+        span.className = "tag";
+        span.textContent = tag;
+        tagRow.appendChild(span);
+      });
+
+      // Reset feedback UI when question changes
+      resetFeedbackAreaForNewQuestion();
+    }
+
+    function metaLabel(role, difficulty) {
+      const roleText =
+        role === "data-analyst" ? "Data Analyst" :
+        role === "web-developer" ? "Web Developer" :
+        "Generic HR / Non-IT";
+
+      const diffText =
+        difficulty === "easy" ? "Easy" :
+        difficulty === "medium" ? "Medium" :
+        "Hard";
+
+      return `${roleText} · ${diffText}`;
+    }
+
+    function updateTags() {
+      // Already handled in renderQuestion per question
+    }
+
+    function updateProgressUI() {
+      answeredCountEl.textContent = questionsAnswered;
+      const goal = 10;
+      const percent = Math.min(100, (questionsAnswered / goal) * 100);
+      progressBarEl.style.width = percent + "%";
+
+      if (questionsAnswered === 0) {
+        sessionStatusEl.textContent = "Session: Fresh";
+      } else if (questionsAnswered < 5) {
+        sessionStatusEl.textContent = "Session: Warming up";
+      } else if (questionsAnswered < 10) {
+        sessionStatusEl.textContent = "Session: In flow";
+      } else {
+        sessionStatusEl.textContent = "Session: On fire!";
+      }
+
+      // Simple pseudo self-score
+      if (questionsAnswered === 0) {
+        selfScoreEl.textContent = "–";
+      } else if (questionsAnswered < 4) {
+        selfScoreEl.textContent = "60–70% (est.)";
+      } else if (questionsAnswered < 8) {
+        selfScoreEl.textContent = "70–80% (est.)";
+      } else {
+        selfScoreEl.textContent = "80%+ (est.)";
+      }
+    }
+
+    // --------------------------
+    // MOCK "AI" FEEDBACK
+    // --------------------------
+
+    function generateMockFeedback(questionText, answerText, role, difficulty) {
+      // Very simple logic: we just analyse length + some keywords.
+      const length = answerText.trim().length;
+
+      const strengths = [];
+      const improvements = [];
+      let suggested = "";
+
+      if (length < 30) {
+        strengths.push("You kept your answer short, which can be good if the interviewer wants a quick summary.");
+        improvements.push("Your answer is too short. Add more details, examples, and context.");
+      } else if (length < 120) {
+        strengths.push("Your answer is clear and not too long, which keeps the interviewer engaged.");
+        improvements.push("You can still add a specific example or small real story to make it stronger.");
+      } else {
+        strengths.push("You provided a detailed answer, which shows seriousness and effort.");
+        strengths.push("Length is good for a proper explanation during an interview.");
+        improvements.push("Avoid making it too long. Try to remove repeated points and keep it focused.");
+      }
+
+      const lower = answerText.toLowerCase();
+
+      if (!lower.includes("example") && !lower.includes("for instance") && !lower.includes("for example")) {
+        improvements.push("Try to add a specific example. Interviewers love real situations, not only theory.");
+      }
+
+      if (role === "data-analyst" && !lower.includes("excel") && !lower.includes("sql") && !lower.includes("power bi") && !lower.includes("python")) {
+        improvements.push("Mention at least one tool like Excel, SQL, Power BI or Python to sound more practical.");
+      }
+
+      if (role === "web-developer" && !lower.includes("html") && !lower.includes("css") && !lower.includes("javascript")) {
+        improvements.push("Mention basic web technologies like HTML, CSS or JavaScript to connect with the role.");
+      }
+
+      if (role === "generic-hr" && !lower.includes("team") && !lower.includes("teamwork") && !lower.includes("communication")) {
+        improvements.push("You can mention soft skills like teamwork or communication to impress HR.");
+      }
+
+      // Suggested short sample answer (very simple templates)
+      if (role === "data-analyst") {
+        suggested =
+          "A stronger answer could be: 'In my recent project, I worked on a sales dataset in Excel/Power BI. First, I cleaned missing values and removed duplicates. Then I created a few visualizations to compare regions and products. Based on the insights, I recommended focusing on the top 3 regions with highest growth potential. This helped the team make a more clear decision.'";
+      } else if (role === "web-developer") {
+        suggested =
+          "You might say: 'As a web developer, I mainly use HTML for structure, CSS for styling and layout, and JavaScript for interactive behavior. For example, in one mini project I built a responsive landing page using Flexbox and a bit of JavaScript for smooth scrolling and button actions.'";
+      } else {
+        suggested =
+          "You could answer like: 'I am a dedicated and adaptable person. In my last project or college activity, I faced a challenge when things did not go as planned. I discussed with my team, divided the tasks, and communicated clearly so that we could meet the deadline. This experience improved my confidence and teamwork skills.'";
+      }
+
+      return {
+        strengths: strengths.join(" "),
+        improvements: improvements.join(" "),
+        suggested
+      };
+    }
+
+    function resetFeedbackAreaForNewQuestion() {
+      feedbackEmptyEl.style.display = "block";
+      strengthsBlockEl.style.display = "none";
+      improvementsBlockEl.style.display = "none";
+      suggestedBlockEl.style.display = "none";
+      feedbackStatusEl.innerHTML = `
+        <span class="status-dot" style="background:#facc15; box-shadow:0 0 8px rgba(250,204,21,0.9);"></span>
+        Waiting for your answer…
+      `;
+    }
+
+    function showFeedback(feedback) {
+      feedbackEmptyEl.style.display = "none";
+      strengthsBlockEl.style.display = "block";
+      improvementsBlockEl.style.display = "block";
+      suggestedBlockEl.style.display = "block";
+
+      strengthsTextEl.textContent = feedback.strengths;
+      improvementsTextEl.textContent = feedback.improvements;
+      suggestedTextEl.textContent = feedback.suggested;
+
+      feedbackStatusEl.innerHTML = `
+        <span class="status-dot" style="background:#4ade80; box-shadow:0 0 8px rgba(74,222,128,0.9);"></span>
+        Feedback generated (mock AI)
+      `;
+    }
+
+    // --------------------------
+    // HISTORY (localStorage)
+    // --------------------------
+
+    const STORAGE_KEY = "ai-interview-coach-history";
+
+    function loadHistoryFromStorage() {
+      const raw = localStorage.getItem(STORAGE_KEY);
+      if (!raw) return;
+
+      try {
+        const history = JSON.parse(raw);
+        if (Array.isArray(history) && history.length > 0) {
+          renderHistory(history);
+        }
+      } catch (e) {
+        console.error("Error parsing history:", e);
+      }
+    }
+
+    function saveHistoryEntry(questionText, role, difficulty) {
+      const raw = localStorage.getItem(STORAGE_KEY);
+      let history = [];
+      if (raw) {
+        try {
+          history = JSON.parse(raw);
+        } catch (e) {
+          history = [];
+        }
+      }
+
+      history.unshift({
+        question: questionText,
+        role,
+        difficulty,
+        time: new Date().toISOString()
+      });
+
+      // store only last 10
+      history = history.slice(0, 10);
+
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(history));
+      renderHistory(history);
+    }
+
+    function renderHistory(history) {
+      historyListEl.innerHTML = "";
+      history.forEach(item => {
+        const div = document.createElement("div");
+        div.className = "history-item";
+        const roleLabel = metaLabel(item.role, item.difficulty);
+        div.textContent = `• ${item.question} (${roleLabel})`;
+        historyListEl.appendChild(div);
+      });
+    }
+
+    // --------------------------
+    // EVENT HANDLERS
+    // --------------------------
+
+    roleSelect.addEventListener("change", () => {
+      filterQuestions();
+      renderQuestion();
+    });
+
+    difficultySelect.addEventListener("change", () => {
+      filterQuestions();
+      renderQuestion();
+    });
+
+    prevBtn.addEventListener("click", () => {
+      if (filteredQuestions.length === 0) return;
+      currentIndex = (currentIndex - 1 + filteredQuestions.length) % filteredQuestions.length;
+      renderQuestion();
+    });
+
+    nextBtn.addEventListener("click", () => {
+      if (filteredQuestions.length === 0) return;
+      currentIndex = (currentIndex + 1) % filteredQuestions.length;
+      renderQuestion();
+    });
+
+    shuffleBtn.addEventListener("click", () => {
+      if (filteredQuestions.length === 0) return;
+      const randomIndex = Math.floor(Math.random() * filteredQuestions.length);
+      currentIndex = randomIndex;
+      renderQuestion();
+    });
+
+    clearBtn.addEventListener("click", () => {
+      answerInput.value = "";
+      resetFeedbackAreaForNewQuestion();
+    });
+
+    feedbackBtn.addEventListener("click", () => {
+      const answer = answerInput.value.trim();
+      if (!answer) {
+        alert("Please type your answer first 🙂");
+        return;
+      }
+
+      const currentQuestion = filteredQuestions[currentIndex];
+      const role = roleSelect.value;
+      const difficulty = difficultySelect.value;
+
+      feedbackStatusEl.innerHTML = `
+        <span class="status-dot" style="background:#38bdf8; box-shadow:0 0 8px rgba(56,189,248,0.9);"></span>
+        Thinking like an AI…
+      `;
+
+      // Simulate AI processing delay using setTimeout
+      setTimeout(() => {
+        const feedback = generateMockFeedback(currentQuestion.text, answer, role, difficulty);
+        showFeedback(feedback);
+
+        questionsAnswered += 1;
+        updateProgressUI();
+        saveHistoryEntry(currentQuestion.text, role, difficulty);
+      }, 600);
+    });
+
+    // --------------------------
+    // RUN
+    // --------------------------
+
+    init();
+  </script>
+</body>
+</html>
